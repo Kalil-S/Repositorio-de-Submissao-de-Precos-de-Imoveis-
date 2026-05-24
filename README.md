@@ -27,7 +27,10 @@ A etapa de exploração visual permitiu identificar a estrutura latente dos dado
 
 * **Identificação de Outliers:** Histogramas de densidade comprovaram que a distribuição da variável alvo (`SalePrice`) sofre de assimetria positiva substancial (*Right Skewness*), uma característica esperada em ativos financeiros. Gráficos de dispersão (*scatter plots*) evidenciaram a presença de propriedades com vasta área territorial, mas valores atípicos de venda, identificando *outliers* primários.
 <img src="https://github.com/Kalil-S/Repositorio-de-Desenvolvimento-de-Precos-de-Imoveis/blob/main/plots/eda_engineered_features.png">
----
+
+* **Identificação de Correlações Relevantes:** A matriz de correlação de Pearson destacou que atributos dimensionais globais e índices de qualidade construtiva ostentam as mais elevadas correlações lineares positivas e diretas com o preço. Variáveis fragmentadas ou esparsas isoladamente demonstraram baixo coeficiente de determinação explicativo.
+<img src ="https://github.com/Kalil-S/Repositorio-de-Desenvolvimento-de-Precos-de-Imoveis/blob/main/plots/eda_correlation.png">
+
 ---
 
 ## 4. Pré-processamento e Feature Engineering
@@ -47,3 +50,24 @@ Para preparar a base para os algoritmos matemáticos e evitar *data leakage* (va
 * **Busca de Hiperparâmetros:** Os melhores hiperparâmetros foram definidos através de busca automatizada (como o *GridSearchCV*), ajustando parâmetros essenciais como a profundidade máxima das árvores e a taxa de aprendizado (*learning rate*) no XGBoost, focando na minimização do erro.
 
 ---
+## 6. Conclusões
+
+### Tabela Comparativa de Performance
+Os resultados subsequentes refletem o desempenho computado durante a fase rigorosa de **Validação Cruzada pós-tuning**, onde as metodologias demonstraram seus erros e desvios reais:
+
+| Modelo de Machine Learning | R² Médio | R² Desvio | RMSLE Médio | RMSLE Desvio | MAE Médio | MAE Desvio | Tempo de Treino (s) |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Ridge (L2)** | **0,93180** | 0,00644 | **0,10843** | 0,00811 | **$ 13.157,10** | $ 655,29 | **0,32s** |
+| **XGBoost** | 0,90904 | 0,00871 | 0,11851 | 0,00736 | $14.294,88 |$ 1.347,00 | 2,89s |
+| **Linear Regression** | 0,89387 | 0,01449 | 0,13429 | 0,01273 | $15.698,01 |$ 1.269,05 | 0,38s |
+| **Random Forest** | 0,88381 | 0,00741 | 0,13444 | 0,00934 | $16.363,51 |$ 1.242,87 | 24,19s |
+
+### Justificativa de Erro e Impacto no Negócio
+Nosso modelo computacional final baseado na regressão Ridge obteve um Erro Médio Absoluto (MAE) estipulado em cerca de **$ 13.157,10**. Isso significa que a máquina erra a precificação das residências, em média, por 13,1 mil dólares, tanto subestimando quanto superestimando o laudo predial. 
+
+Considerando um mercado imobiliário padrão cujos imóveis ultrapassam o crivo de $200.000, um desvio absoluto de$ 13 mil enquadra-se dentro de uma variância analítica excepcional (inferior a 7%). Este nível de estabilidade estatística confere extrema solidez para o negócio, permitindo mitigar o risco humano de avaliações viesadas e agilizando as operações em sistemas digitais voltados a imobiliárias de alto volume.
+
+### Justificativa Final
+A decisão fundamentada pela arquitetura matemática do **Ridge (Regularização L2)** comprova-se cientificamente pelo conjunto de métricas aferidas. O *tuning* paramétrico do Ridge (com `alpha: 25.0`) conseguiu resolver eficientemente os efeitos colaterais da maldição da dimensionalidade provocada pela vasta quantia de colunas do *OneHotEncoding*. 
+
+O Ridge distanciou-se estatisticamente do então campeão presumido (XGBoost) ao elevar a taxa de explicação de variância (R² médio em 0,9318) e reduzir drasticamente a perda logarítmica em ambiente de Cross-Validation (RMSLE de 0,10843) com pouquíssima oscilação. Adicionalmente, seu ciclo de validação foi completo em levíssimos **0,32 segundos**, consolidando uma robusta relação custo-benefício computacional. Um modelo infinitamente mais ágil, computacionalmente enxuto, e substancialmente mais exato na métrica final da competição do que complexas redes de *ensembles*.
