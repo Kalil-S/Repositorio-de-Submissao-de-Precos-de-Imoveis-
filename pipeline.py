@@ -124,7 +124,6 @@ if __name__ == "__main__":
         print("=" * 65)
         
         # Transformando as predições em um DataFrame para facilitar a extração de métricas
-        # Supondo que a contagem do ID dos imóveis de teste comece a partir de 1461 (padrão Ames Housing)
         df_resultados = pd.DataFrame({"Preco_Venda_Estimado": previsoes})
         
         # Exibição de estatísticas descritivas para conferência rápida (Sanity Check)
